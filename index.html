@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Stickyfloat : This plugin makes it possible to have a fixed position element that is relative to it’s parent. A normal fixed positioned element would be “out of context” and is very difficult to use in the most common situations with fluid designs. This plugin solves that problem with as little code as I could possible get it so it will run in the most optimized way, while also allow you to customize it in many important ways which might suit you best." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Stickyfloat</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/yairEO/stickyfloat">View on GitHub</a>
+
+          <h1 id="project_title">Stickyfloat</h1>
+          <h2 id="project_tagline">This plugin makes it possible to have a fixed position element that is relative to it’s parent. A normal fixed positioned element would be “out of context” and is very difficult to use in the most common situations with fluid designs. This plugin solves that problem with as little code as I could possible get it so it will run in the most optimized way, while also allow you to customize it in many important ways which might suit you best.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/yairEO/stickyfloat/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/yairEO/stickyfloat/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>Benefits</h2>
+
+<ul>
+<li>Can handle many floated elements, each with it’s own settings</li>
+<li>Floated elements’ movement can be bound inside their parents’ area</li>
+<li>Uses Native JavaScript easing, or CSS3 hardware accelerated transitions (not for IE)</li>
+<li>Has many settings, such as stick to the bottom or animation style</li>
+<li>Code is very maintainable and highly efficient</li>
+</ul><h2>Basic initialization</h2>
+
+<pre><code>jQuery('.menu').stickyfloat( {duration: 400} );
+</code></pre>
+
+<h2>Update (change settings for a specific element)</h2>
+
+<pre><code>jQuery('.menu').stickyfloat('update',{duration : 0, stickToBottom:true });
+</code></pre>
+
+<h2>Destroy (no more floating)</h2>
+
+<pre><code>jQuery('.menu').stickyfloat('destroy');
+</code></pre>
+
+<h2>Parameters</h2>
+
+<h3>duration (200)</h3>
+
+<p>The duration of the animation</p>
+
+<h3>startOffset (number)</h3>
+
+<p>The amount of scroll offset after the animations kicks in</p>
+
+<h3>offsetY (number)</h3>
+
+<p>The offset from the top when the object is animated</p>
+
+<h3>lockBottom (true)</h3>
+
+<p>Set to false if you don’t want your floating box to stop at parent’s bottom</p>
+
+<h3>stickToBottom (false)</h3>
+
+<p>Make whatever that is “floating” sticl top the bottom instead to the top </p>
+
+<h3>delay (0)</h3>
+
+<p>Delay in milliseconds until the animnations starts  </p>
+
+<h3>easing (linear)</h3>
+
+<p>Easing function (jQuery has by default only ‘swing’ &amp; ‘linear’) </p>
+
+<h3>cssTransition (false)</h3>
+
+<p>if you wish to manualy set your own CSS3 transion styles on the floated element, flag this setting as ‘true’</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Stickyfloat maintained by <a href="https://github.com/yairEO">yairEO</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
