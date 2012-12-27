@@ -5,7 +5,7 @@
  * @copyright       Copyright (c) 2012
  * @license         MIT and GPL licenses.
  * @link            http://dropthebit.com
- * @version         Version 6
+ * @version         Version 7.2
  * @parameters		duration 		(number, 200)    - the duration of the animation
 					startOffset 	(number)         - the amount of scroll offset after the animations kicks in
 					offsetY			(number)         - the offset from the top when the object is animated
@@ -18,8 +18,9 @@
  ******************************************/
  
 (function($){
-	var doc	= $(document),
-		bottomPos, minTopPos, pastStartOffset, objFartherThanTopPos, objBiggerThanWindow, newpos, checkTimer
+	var w = window,
+		doc = document,
+		maxTopPos, minTopPos, pastStartOffset, objFartherThanTopPos, objBiggerThanWindow, newpos, checkTimer
 		
 		defaults = {
 			duration		: 200, 
@@ -31,10 +32,12 @@
 		},
 		// detect CSS transitions support
 		supportsTransitions = (function() {
-			var s = document.body.style,
-				v = ['ms','Khtml','O','Moz','Webkit',''];
-			while( v.length )
-			  if( s[v.pop() + 'Transition'] == '' ) return true;
+			var i, s = doc.createElement('div'), v = ['ms','O','Moz','Webkit'], prop = 'transition';
+			if( s[prop] == '' ) return true;
+				prop = prop[0].toUpperCase() + prop.slice(1);
+			for( i = v.length; i--; )
+				if( s[v[i] + prop] == '' )
+					return true;
 			return false;
 		})(),
 		
@@ -46,14 +49,14 @@
 		Sticky.prototype = {
 			init : function(){
 				var that = this;
+				// create a variable that could later be un-binded (per instance) in the 'destroy' method
 				this.onScroll = function(){ that.rePosition() };
 				
-				$(window).ready(function(){
-					that.rePosition(true);  // do a quick repositioning without any duration or delay
-					$(window).on('scroll.sticky', that.onScroll);
-				});
-				// create a variable that could later be un-binded (per instance) in the 'destroy' method
 				// bind the events
+				$(w).ready(function(){
+					that.rePosition(true);  // do a quick repositioning without any duration or delay
+					$(w).on('scroll.sticky', that.onScroll);
+				});
 				// for every element, attach it's instanced 'sticky'
 				this.obj.data('_stickyfloat', that);
 			},
@@ -64,45 +67,50 @@
 			rePosition : function(quick, force){
 				var $obj 	 = this.obj,
 					settings = this.settings,
-					duration = settings.duration;
-				
-				if( quick )
-					duration = 0;
+					duration = quick ? 0 : settings.duration,
+					wScroll = w.pageYOffset || doc.documentElement.scrollTop,
+					wHeight  = w.innerHeight || doc.documentElement.offsetHeight,
+					objHeight = $obj[0].clientHeight;
 
 				$obj.stop(); // stop all calculations on scroll event
-				
-				bottomPos = $obj.parent().height() - $obj.outerHeight() + settings.offsetY; // get the maximum bottom position
-				if( bottomPos < 0 )
-					bottomPos = 0;
-				
+
+				if( settings.lockBottom )
+					maxTopPos = $obj[0].parentNode.clientHeight - objHeight - settings.offsetBottom; // get the maximum top position of the floated element inside it's parent
+
+				if( maxTopPos < 0 )
+					maxTopPos = 0;
+
 				// define the basics of when should the object be moved
-				pastStartOffset			= doc.scrollTop() > settings.startOffset;	// check if the window was scrolled down more than the start offset declared.
-				objFartherThanTopPos	= $obj.offset().top > settings.startOffset;	// check if the object is at it's top position (starting point)
-				objBiggerThanWindow 	= $obj.outerHeight() < $(window).height();	// if the window size is smaller than the Obj size, do not animate.
-				
+				pastStartOffset			= wScroll > settings.startOffset;	// check if the window was scrolled down more than the start offset declared.
+				objFartherThanTopPos	= $obj.offset().top > (settings.startOffset + settings.offsetY);	// check if the object is at it's top position (starting point)
+				objBiggerThanWindow 	= objHeight < wHeight;	// if the window size is smaller than the Obj size, do not animate.
+
 				// if window scrolled down more than startOffset OR obj position is greater than
 				// the top position possible (+ offsetY) AND window size must be bigger than Obj size
-				if( (pastStartOffset || objFartherThanTopPos && objBiggerThanWindow) || force ){ 
+
+				if( (pastStartOffset || objFartherThanTopPos && objBiggerThanWindow) || force ){
 					newpos = settings.stickToBottom ? 
-								doc.scrollTop() + $(window.top).height() - $obj.outerHeight() - settings.startOffset - settings.offsetY : 
-								doc.scrollTop() - settings.startOffset + settings.offsetY;
+								wScroll + wHeight - objHeight - settings.startOffset - settings.offsetY : 
+								wScroll - settings.startOffset + settings.offsetY;
+
 					// made sure the floated element won't go beyond a certain maximum bottom position
-					if( newpos > bottomPos && settings.lockBottom )
-						newpos = bottomPos;
+					if( newpos > maxTopPos && settings.lockBottom )
+						newpos = maxTopPos;
 					// make sure the new position is never less than the offsetY so the element won't go too high (when stuck to bottom and scrolled all the way up)
 					if( newpos < settings.offsetY )
 						newpos = settings.offsetY;
 					// if window scrolled < starting offset, then reset Obj position (settings.offsetY);
-					else if( doc.scrollTop() < settings.startOffset && !settings.stickToBottom ) 
+					else if( wScroll < settings.startOffset && !settings.stickToBottom ) 
 						newpos = settings.offsetY;
 					
 					// if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
 					if( duration < 5 || (settings.cssTransition && supportsTransitions) )
-						$obj.css('top', newpos);
+						$obj[0].style.top = newpos + 'px';
 					else
-						$obj.stop().delay(settings.delay).animate({ top: newpos }, duration , settings.easing );
+						$obj.stop().delay(settings.delay).animate({ top: newpos }, duration, settings.easing );
 				}
 			},
+
 			// update the settings for the instance and re-position the floating element 
 			update : function(opts){
 				if( typeof opts === 'object' ){
@@ -112,10 +120,12 @@
 						opts.startOffset = getComputed(this.obj).startOffset;
 
 					this.settings = $.extend( {}, this.settings, opts);
+
 					this.rePosition(false, true);
 				}
 				return this.obj;
 			},
+
 			destroy : function(){
 				$(window).off('scroll.sticky', this.onScroll);
 				this.obj.removeData();
@@ -124,10 +134,11 @@
 		};
 		// find the computed startOffset & offsetY of a floating element
 		function getComputed($obj){
-			return { 
-				startOffset : $obj.parent().offset().top, 
-				offsetY		: parseInt($obj.parent().css('padding-top'))
-			};
+			var ob = parseInt($obj.parent().css('padding-bottom')),
+				oy = parseInt($obj.parent().css('padding-top')),
+				so = $obj.parent().offset().top;
+
+			return{ startOffset:so, offsetBottom:ob, offsetY:oy };
 		}
 
 	$.fn.stickyfloat = function(option, settings){
