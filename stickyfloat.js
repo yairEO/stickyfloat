@@ -1,11 +1,11 @@
-/******************************************
+/**
  * stickyfloat - jQuery plugin for verticaly floating anything in a constrained area
  *
  * @author          Yair Even-Or (vsync)
  * @copyright       Copyright (c) 2012
  * @license         MIT and GPL licenses.
  * @link            http://dropthebit.com
- * @version         Version 7.2
+ * @version         Version 7.3
  * @parameters		duration 		(number, 200)    - the duration of the animation
 					startOffset 	(number)         - the amount of scroll offset after the animations kicks in
 					offsetY			(number)         - the offset from the top when the object is animated
@@ -15,12 +15,12 @@
 					stickToBottom 	(boolean, false) - to make the element stick to the bottom instead to the top
    @example			Example: jQuery('#menu').stickyfloat({duration: 400});
  *
- ******************************************/
+ **/
  
 (function($){
 	var w = window,
 		doc = document,
-		maxTopPos, minTopPos, pastStartOffset, objFartherThanTopPos, objBiggerThanWindow, newpos, checkTimer
+		maxTopPos, minTopPos, pastStartOffset, objFartherThanTopPos, objBiggerThanWindow, newpos,
 		
 		defaults = {
 			duration		: 200, 
@@ -34,7 +34,7 @@
 		supportsTransitions = (function() {
 			var i, s = doc.createElement('div'), v = ['ms','O','Moz','Webkit'], prop = 'transition';
 			if( s[prop] == '' ) return true;
-				prop = prop[0].toUpperCase() + prop.slice(1);
+				prop = prop.charAt(0).toUpperCase() + prop.slice(1);
 			for( i = v.length; i--; )
 				if( s[v[i] + prop] == '' )
 					return true;
@@ -87,8 +87,8 @@
 
 				// if window scrolled down more than startOffset OR obj position is greater than
 				// the top position possible (+ offsetY) AND window size must be bigger than Obj size
-
 				if( (pastStartOffset || objFartherThanTopPos && objBiggerThanWindow) || force ){
+					resetTopPos = true;
 					newpos = settings.stickToBottom ? 
 								wScroll + wHeight - objHeight - settings.startOffset - settings.offsetY : 
 								wScroll - settings.startOffset + settings.offsetY;
