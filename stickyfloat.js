@@ -88,7 +88,6 @@
 				// if window scrolled down more than startOffset OR obj position is greater than
 				// the top position possible (+ offsetY) AND window size must be bigger than Obj size
 				if( (pastStartOffset || objFartherThanTopPos && objBiggerThanWindow) || force ){
-					resetTopPos = true;
 					newpos = settings.stickToBottom ? 
 								wScroll + wHeight - objHeight - settings.startOffset - settings.offsetY : 
 								wScroll - settings.startOffset + settings.offsetY;
