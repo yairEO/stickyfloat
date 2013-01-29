@@ -1,9 +1,9 @@
 {
 	"name": "stickyfloat",
 	"title": "stickyfloat",
-	"description": "Makes it possible to have a fixed position element that is relative to it’s parent",
-	"keywords": [ "float", "sticky", "position", "animation"],
-	"version": "7.3",
+	"description": "Makes it possible to have a fixed position element that is relative to it's parent. In other words, floats an element along while scrolling...but does this good.",
+	"keywords": ["float", "sticky", "position", "animation"],
+	"version": "7.4.0",
 	"author": {
 		"name": "Yair Even Or",
 		"url": "http://dropthebit.com"
