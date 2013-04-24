@@ -2,10 +2,10 @@
  * stickyfloat - jQuery plugin for verticaly floating anything in a constrained area
  *
  * @author          Yair Even-Or (vsync)
- * @copyright       Copyright (c) 2012
+ * @copyright       Copyright (c) 2013
  * @license         MIT and GPL licenses.
  * @link            http://dropthebit.com
- * @version         Version 7.3
+ * @version         Version 7.4
  * @parameters		duration 		(number, 200)    - the duration of the animation
 					startOffset 	(number)         - the amount of scroll offset after the animations kicks in
 					offsetY			(number)         - the offset from the top when the object is animated
@@ -87,7 +87,7 @@
 
 				// if window scrolled down more than startOffset OR obj position is greater than
 				// the top position possible (+ offsetY) AND window size must be bigger than Obj size
-				if( (pastStartOffset || objFartherThanTopPos && objBiggerThanWindow) || force ){
+				if( ((pastStartOffset || objFartherThanTopPos) && objBiggerThanWindow) || force ){
 					newpos = settings.stickToBottom ? 
 								wScroll + wHeight - objHeight - settings.startOffset - settings.offsetY : 
 								wScroll - settings.startOffset + settings.offsetY;
@@ -141,20 +141,24 @@
 		}
 
 	$.fn.stickyfloat = function(option, settings){
-		if(typeof option === 'object')
-			settings = option;
-		else if(typeof option === 'string'){
-			if( this.data('_stickyfloat') && typeof this.data('_stickyfloat')[option] == 'function' ){
-				var sticky = this.data('_stickyfloat');
-				return sticky[option](settings);
-			}
-			else
-				return this;
-		} 
 		// instatiate a new 'Sticky' object per item that needs to be floated
 		return this.each(function(){
-			var $obj = $(this),
-				$settings = $.extend( {}, defaults, getComputed($obj), settings || {} );
+			var $obj = $(this);
+			
+			if( typeof document.body.style.maxHeight == 'undefined' )
+				return false;
+			if(typeof option === 'object')
+				settings = option;
+			else if(typeof option === 'string'){
+				if( $obj.data('_stickyfloat') && typeof $obj.data('_stickyfloat')[option] == 'function' ){
+					var sticky = $obj.data('_stickyfloat');
+					return sticky[option](settings);
+				}
+				else
+					return this;
+			} 
+		
+			var $settings = $.extend( {}, defaults, getComputed($obj), settings || {} );
 				
 			var sticky = new Sticky($settings, $obj);
 			sticky.init();
