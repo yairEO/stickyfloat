@@ -13,6 +13,7 @@
 				.wrap ul{ list-style:none; padding:0; }
 					.wrap ul li{ margin-bottom:20px; }
 						.wrap ul li h3{ font-size:1.2em; padding:0; margin:0; }
+			.ad{ position:absolute; top:10px; right:10px; width:240px; height:100px; background:#8B0000; color:#FFF; font-size:2em; text-align:center; line-height:100px; }
 			.menu{ position:absolute; left:10px; padding:15px; width:210px; background:green;color:#FFF; }
 				.menu .easing{ overflow:hidden; margin:10px 0; }
 				.menu .easing button{ font-size:1.1em; float:left; clear:left; line-height:1; cursor:pointer; }
@@ -20,14 +21,15 @@
 				.menu label{ display:block; overflow:hidden; margin-bottom:5px; line-height:1.6; }
 				.menu label input{ float:right; }
 				.menu label input[type=text]{ width:60px; }
-			.menu2{ right:10px; left:auto; background-color:purple; }
+			.menu2_wrap{ position:absolute; top:120px; right:0; bottom:30px; }
+			.menu2{ top:120px; right:10px; left:auto; background-color:purple; }
 			.transition200 .duration,
 			.transition200 .delay{ visibility:hidden; }
 			.transition200{ transition:200ms; -webkit-transition:200ms; -o-transition:200ms; }
 		.footer{  height:500px; background-color:blue; text-align:center; color:#FFF; font-size:3em; }
 	</style>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script src='stickyfloat.js'></script>
+	<script src='stickyfloat.min.js'></script>
 </head>
 <body>
 	<div class="header">Header</div>
@@ -75,48 +77,51 @@
 				Use CSS3 transition (better):
 			</label>
 		</div>
-		<div class="menu menu2">
-			<h3>Menu 2 Options:</h3>
-			<div class='easing'>
-				<button>linear</button>
-				<button>swing</button>
-				<button>easeInQuad</button>
-				<button>easeOutQuad</button>
-				<button>easeInOutQuad</button>
-				<button>easeOutElastic</button>
-				<button>easeInOutElastic</button>
-				<button>easeInBack</button>
-				<button>easeOutBack</button>
-				<button>easeInOutBack</button>
+		<div class='ad'>FIXED AD</div>
+		<div class='menu2_wrap'>
+			<div class="menu menu2">
+				<h3>Menu 2 Options:</h3>
+				<div class='easing'>
+					<button>linear</button>
+					<button>swing</button>
+					<button>easeInQuad</button>
+					<button>easeOutQuad</button>
+					<button>easeInOutQuad</button>
+					<button>easeOutElastic</button>
+					<button>easeInOutElastic</button>
+					<button>easeInBack</button>
+					<button>easeOutBack</button>
+					<button>easeInOutBack</button>
+				</div>
+				<label>
+					<input type='text' class='duration' value='0' />
+					Duration (in ms):
+				</label>
+				<label>
+					<input type='text' class='delay' value='0' />
+					Delay (in ms):
+				</label>
+				<label>
+					<input type='text' class='offsetY' value='auto' />
+					offsetY (in px):
+				</label> 
+				<label>
+					<input type='text' class='startOffset' value='' />
+					startOffset (in px):
+				</label> 
+				<label>
+					<input type='checkbox' class='stickToBottom' />
+					Stick to bottom:
+				</label>
+				<label>
+					<input type='checkbox' class='lockBottom' checked />
+					Bind to parent's bottom:
+				</label>
+				<label>
+					<input type='checkbox' class='cssTransition' />
+					Use CSS3 transition (better):
+				</label>
 			</div>
-			<label>
-				<input type='text' class='duration' value='0' />
-				Duration (in ms):
-			</label>
-			<label>
-				<input type='text' class='delay' value='0' />
-				Delay (in ms):
-			</label>
-			<label>
-				<input type='text' class='offsetY' value='auto' />
-				offsetY (in px):
-			</label> 
-			<label>
-				<input type='text' class='startOffset' value='' />
-				startOffset (in px):
-			</label> 
-			<label>
-				<input type='checkbox' class='stickToBottom' />
-				Stick to bottom:
-			</label>
-			<label>
-				<input type='checkbox' class='lockBottom' checked />
-				Bind to parent's bottom:
-			</label>
-			<label>
-				<input type='checkbox' class='cssTransition' />
-				Use CSS3 transition (better):
-			</label>
 		</div>
 		<div class="wrap">
 			Example:<br/>
@@ -196,7 +201,7 @@
 		
 		// init the pluging and bind it to the #menu element
 		$('.menu').stickyfloat();
-		$('.menu2').stickyfloat('update',{ duration : 0 });
+		$('.menu2').stickyfloat('update',{ duration:0 });
 		
 		/* binds for this demo only
 		------------------------------------------------------*/
