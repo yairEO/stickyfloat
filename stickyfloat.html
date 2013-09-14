@@ -73,7 +73,7 @@
 				Bind to parent's bottom:
 			</label>
 			<label>
-				<input type='checkbox' class='cssTransition' />
+				<input type='checkbox' class='cssTransition' checked />
 				Use CSS3 transition (better):
 			</label>
 		</div>
@@ -199,12 +199,14 @@
 			}
 		});
 		
-		// init the pluging and bind it to the #menu element
+		// init the plug-in and bind it to the #menu element
+		//------------------------------------------------------
 		$('.menu').stickyfloat();
 		$('.menu2').stickyfloat('update',{ duration:0 });
 		
-		/* binds for this demo only
-		------------------------------------------------------*/
+		
+		// Stuff which are for this DEMO page only
+		//------------------------------------------------------
 		$('.menu').on('click', 'button', function(){
 			var elem = $(this).parents('.menu');
 			elem.stickyfloat('update', { easing:this.innerHTML });
