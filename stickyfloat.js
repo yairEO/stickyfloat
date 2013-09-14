@@ -48,6 +48,10 @@
         
         Sticky.prototype = {
             init : function(){
+				// don't bind an event listener if one is already attached
+				if( this.obj.data('_stickyfloat') )
+					return false;
+
                 var that = this;
                 // create a variable that could later be un-binded (per instance) in the 'destroy' method
                 this.onScroll = function(){ that.rePosition() };
