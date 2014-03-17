@@ -30,7 +30,7 @@ This plugin makes it possible to have a fixed position element that is relative 
 
 ## Old Browsers (no ES5 support)
 Please add this shim before any other script:
-    <script src='http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.js'></script>
+    &lt;script src='http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.js'&gt;&lt;/script&gt;
 	
 ##Parameters
 
