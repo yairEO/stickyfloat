@@ -52,10 +52,25 @@
 				if( this.obj.data('_stickyfloat') )
 					return false;
 
-                var that = this;
-                // create a variable that could later be un-binded (per instance) in the 'destroy' method
-                this.onScroll = function(){ that.rePosition() };
-                
+                var that = this,
+					requestFrame =  window.requestAnimationFrame || window.webkitRequestAnimationFrame ||
+									// throttle
+									(function(){ 
+										var throttle = false,
+											FPS = 60 / 1000; // ms
+										 
+										return function(CB) {
+											if( throttle ) return;
+											throttle = true;
+											setTimeout(function(){ throttle = false; }, FPS);
+											CB(); // do your thing
+										}
+									})();
+									
+				this.onScroll = function(){ 
+					requestFrame( that.rePosition.bind(that) );
+				};
+				
                 // bind the events
                 $(w).ready(function(){
                     that.rePosition(true); // do a quick repositioning without any duration or delay
