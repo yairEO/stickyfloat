@@ -117,6 +117,8 @@
                     // make sure the new position is never less than the offsetY so the element won't go too high (when stuck to bottom and scrolled all the way up)
                     if( newpos < settings.offsetY )
                         newpos = settings.offsetY;
+                    if( newpos < settings.offsetTop )
+                        newpos = settings.offsetTop;
                     // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
                     else if( wScroll < settings.startOffset && !settings.stickToBottom ) 
                         newpos = settings.offsetY;
