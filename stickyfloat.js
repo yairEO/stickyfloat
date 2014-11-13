@@ -68,7 +68,7 @@
 									})();
 									
 				this.onScroll = function(){ 
-					requestFrame( that.rePosition.bind(that) );
+					requestFrame( $.proxy(that.rePosition, that) );
 				};
 				
                 // bind the events
