@@ -23,6 +23,7 @@
         maxTopPos, minTopPos, pastStartOffset, objFartherThanTopPos, objBiggerThanWindow, newpos,
         
         defaults = {
+			scrollArea      : w,
             duration        : 200, 
             lockBottom      : true, 
             delay           : 0, 
@@ -32,7 +33,11 @@
         },
         // detect CSS transitions support
         supportsTransitions = (function() {
-            var i, s = doc.createElement('div'), v = ['ms','O','Moz','Webkit'], prop = 'transition';
+            var i, 
+				s = doc.createElement('p').style, 
+				v = ['ms','O','Moz','Webkit'], 
+				prop = 'transition';
+				
             if( s[prop] == '' ) return true;
                 prop = prop.charAt(0).toUpperCase() + prop.slice(1);
             for( i = v.length; i--; )
@@ -53,28 +58,24 @@
 					return false;
 
                 var that = this,
-					requestFrame =  window.requestAnimationFrame || window.webkitRequestAnimationFrame ||
-									// throttle
-									(function(){ 
-										var throttle = false,
-											FPS = 60 / 1000; // ms
-										 
-										return function(CB) {
-											if( throttle ) return;
-											throttle = true;
-											setTimeout(function(){ throttle = false; }, FPS);
-											CB(); // do your thing
-										}
-									})();
-									
-				this.onScroll = function(){ 
-					requestFrame( that.rePosition.bind(that) );
-				};
+					raf = window.requestAnimationFrame
+				       || window.webkitRequestAnimationFrame
+				       || window.mozRequestAnimationFrame
+				       || window.msRequestAnimationFrame
+				       || function(cb){ return window.setTimeout(cb, 1000 / 60); };
+						
 				
                 // bind the events
                 $(w).ready(function(){
                     that.rePosition(true); // do a quick repositioning without any duration or delay
-                    $(w).on('scroll.sticky, resize.sticky', that.onScroll);
+					
+					$(that.settings.scrollArea).on('scroll.stickyfloat', function(){
+						raf( that.rePosition.bind(that) );
+					});
+					
+                    $(w).on('resize.sticky', function(){
+						raf( that.rePosition.bind(that) )
+					});
                 });
                 // for every element, attach it's instanced 'sticky'
                 this.obj.data('_stickyfloat', that);
@@ -84,13 +85,15 @@
             * @force - force a repositioning
             **/
             rePosition : function(quick, force){
-                var $obj     = this.obj,
-                    settings = this.settings,
-                    duration = quick ? 0 : settings.duration,
-                    wScroll = w.pageYOffset || doc.documentElement.scrollTop,
-                    wHeight  = w.innerHeight || doc.documentElement.offsetHeight,
+                var $obj      = this.obj,
+                    settings  = this.settings,
+                    duration  = quick === true ? 0 : settings.duration,
+                    //wScroll = w.pageYOffset || doc.documentElement.scrollTop,
+                    //wHeight = w.innerHeight || doc.documentElement.offsetHeight,
+					wScroll   =  this.settings.scrollArea == w ? doc.documentElement.scrollTop : this.settings.scrollArea.scrollTop,
+                    wHeight   =  this.settings.scrollArea == w ? doc.documentElement.offsetHeight : this.settings.scrollArea.offsetHeight,
                     objHeight = $obj[0].clientHeight;
-
+					
                 $obj.stop(); // stop jquery animation on scroll event
 
                 if( settings.lockBottom )
@@ -120,12 +123,12 @@
                     // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
                     else if( wScroll < settings.startOffset && !settings.stickToBottom ) 
                         newpos = settings.offsetY;
-                    
+						
                     // if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
                     if( duration < 5 || (settings.cssTransition && supportsTransitions) )
                         $obj[0].style.top = newpos + 'px';
                     else
-                        $obj.stop().delay(settings.delay).animate({ top: newpos }, duration, settings.easing );
+                        $obj.stop().delay(settings.delay).animate({ top: newpos }, 500, settings.easing );
                 }
             },
 
