@@ -35,6 +35,9 @@ Please add this shim before any other script:
 	
 ##Parameters
 
+### scrollArea (window)
+The element which stickyfloat should track it's scroll position (for situations with inner scroll)
+
 ### duration (200)
 The duration of the animation
 	
