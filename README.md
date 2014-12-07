@@ -9,7 +9,7 @@ This plugin makes it possible to have a fixed position element that is relative 
 
 # [Demo page](http://dropthebit.com/demos/stickyfloat/stickyfloat.html)
 
-##Benefits
+###Benefits
 
 * Can handle many floated elements, each with it’s own settings
 * Floated elements’ movement can be bound inside their parents’ area
@@ -18,45 +18,46 @@ This plugin makes it possible to have a fixed position element that is relative 
 * Code is very maintainable and higly efficient
 * Uses `requestAnimationFrame` with a throttled fall-back
 
-##Example – initialize
+###Example – initialize
     jQuery('.menu').stickyfloat( {duration: 400} );
     
-##Example – update (change settings for a specific element)
+###Example – update (change settings for a specific element)
     jQuery('.menu').stickyfloat('update',{duration : 0, stickToBottom:true });
 
-##Example – destroy (no more floating)
+###Example – destroy (no more floating)
     jQuery('.menu').stickyfloat('destroy');
 
 
-## Old Browsers (no ES5 support)
+### Old Browsers (no ES5 support)
 Please add this shim before any other script:
-    <script src='http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.js'></script>
+    
+	&lt;script src='http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.js'&gt;&lt;/script&lt;
 	
 ##Parameters
 
-### scrollArea (window)
+#### scrollArea (window)
 The element which stickyfloat should track it's scroll position (for situations with inner scroll)
 
-### duration (200)
+#### duration (200)
 The duration of the animation
 	
-### startOffset (number)
+#### startOffset (number)
 The amount of scroll offset after the animations kicks in
 	
-### offsetY (number)
+#### offsetY (number)
 The offset from the top when the object is animated
 	
-### lockBottom (true)
+#### lockBottom (true)
 Set to false if you don’t want your floating box to stop at parent's bottom
 	
-### stickToBottom (false)
+#### stickToBottom (false)
 Make whatever that is “floating” sticl top the bottom instead to the top 
 	
-### delay (0)
+#### delay (0)
 Delay in milliseconds until the animnations starts  
 	
-### easing (linear)
+#### easing (linear)
 Easing function (jQuery has by default only ‘swing’ & ‘linear’) 
 	
-### cssTransition (false)
+#### cssTransition (false)
 if you wish to manualy set your own CSS3 transion styles on the floated element, flag this setting as 'true'
