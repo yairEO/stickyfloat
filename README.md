@@ -35,14 +35,14 @@ Please add this shim before any other script:
 
 ##Parameters
 
-| Setting       | Default / type | what it's for                                                                                          |
-|---------------|----------------|--------------------------------------------------------------------------------------------------------|
-| scrollArea    | window         | The element which stickyfloat should track it's scroll position (for situations with inner scroll)     |
-| duration      | 200            | The duration of the animation in ms                                                                    |
-| startOffset   | number         | The amount of scroll offset after the animations kicks in                                              |
-| offsetY       | offsetY        | The offset from the top when the object is animated                                                    |
-| lockBottom    | true           | Set to false if you don’t want your floating box to stop at parent's bottom                            |
-| stickToBottom | false          | Make whatever that is “floating” stick to the bottom instead to the top                                |
-| delay         | 0              | Delay in milliseconds until the animation starts                                                       |
-| easing        | linear         | Easing function (jQuery has only two by default: ‘swing’ & ‘linear’)                                   |
-| cssTransition | false          | If you wish to manually set your own CSS3 transition styles on the floated element, set this to 'true' |
+| Setting       | Default / type       | what it's for                                                                                          |
+|---------------|----------------------|--------------------------------------------------------------------------------------------------------|
+| scrollArea    | window / DOM element | The element which stickyfloat should track it's scroll position (for situations with inner scroll)     |
+| duration      | 200 / Number in ms   | The duration of the animation in ms                                                                    |
+| startOffset   | 0 / Number           | The amount of scroll offset in px after the animations kicks in                                        |
+| offsetY       | 0 / Number           | The offset from the top in px when the object is animated                                              |
+| lockBottom    | true / Boolean       | Set to false if you don’t want your floating box to stop at parent's bottom                            |
+| stickToBottom | false / Boolean      | Make whatever that is “floating” stick to the bottom instead to the top                                |
+| delay         | 0 / Number           | Delay in milliseconds until the animation starts                                                       |
+| easing        | linear / String      | Easing function (jQuery has only two by default: ‘swing’ & ‘linear’)                                   |
+| cssTransition | false / Boolean      | If you wish to manually set your own CSS3 transition styles on the floated element, set this to 'true' |
