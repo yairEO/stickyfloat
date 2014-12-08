@@ -69,13 +69,11 @@
                 $(w).ready(function(){
                     that.rePosition(true); // do a quick repositioning without any duration or delay
 					
-					$(that.settings.scrollArea).on('scroll.stickyfloat', function(){
-						raf( that.rePosition.bind(that) );
-					});
-					
-                    $(w).on('resize.sticky', function(){
-						raf( that.rePosition.bind(that) )
-					});
+                    that.onRepositionEvent = function() {
+                        raf( that.rePosition.bind(that) );
+                    };
+                    $(that.settings.scrollArea).on('scroll.sticky', that.onRepositionEvent);
+                    $(w).on('resize.sticky', that.onRepositionEvent);
                 });
                 // for every element, attach it's instanced 'sticky'
                 this.obj.data('_stickyfloat', that);
@@ -148,7 +146,8 @@
             },
 
             destroy : function(){
-                $(window).off('scroll.sticky, resize.sticky', this.onScroll);
+                $(this.settings.scrollArea).off('scroll.sticky', this.onRepositionEvent);
+                $(window).off('resize.sticky', this.onRepositionEvent);
                 this.obj.removeData();
                 return this.obj;
             }
