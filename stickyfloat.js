@@ -5,7 +5,7 @@
  * @copyright       Copyright (c) 2013
  * @license         MIT and GPL licenses.
  * @link            http://dropthebit.com
- * @version         Version 7.5
+ * @version         Version 8
  * @parameters      duration        (number, 200)    - the duration of the animation
                     startOffset     (number)         - the amount of scroll offset after the animations kicks in
                     offsetY         (number)         - the offset from the top when the object is animated
@@ -13,7 +13,7 @@
                     delay           (number, 0)      - delay in milliseconds  until the animnations starts
                     easing          (string, linear) - easing function (jQuery has by default only 'swing' & 'linear')
                     stickToBottom   (boolean, false) - to make the element stick to the bottom instead to the top
-					onReposition    (function)       - a callback to be invoked when the floated element is repositioned.
+					onReposition    (function)       - a callback to be invoked when the floated element is repositioned
 					scrollArea      (DOM element, window) - The element which stickyfloat should track it's scroll position (for situations with inner scroll)
 					
    @example         Example: jQuery('#menu').stickyfloat({duration: 400});
@@ -159,7 +159,8 @@
             },
 
             destroy : function(){
-                $(that.settings.scrollArea).off('scroll.sticky, resize.sticky');
+                $(that.settings.scrollArea).off('scroll.sticky');
+				$(w).off('resize.sticky');
                 this.obj.removeData();
                 return this.obj;
             }

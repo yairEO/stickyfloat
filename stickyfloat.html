@@ -124,6 +124,7 @@
 			</div>
 		</div>
 		<div class="wrap">
+			<h3>Project Page - <a href='https://github.com/yairEO/stickyfloat'>https://github.com/yairEO/stickyfloat</a></h3><br/>
 			Example:<br/>
 			<code>jQuery('.menu').stickyfloat({ duration: 400 });</code>
 			<br/>
@@ -136,7 +137,7 @@
 });
 </pre>
 			</code>
-			<h2>parameters:</h2>
+			<h2>Parameters:</h2>
 			<ul>
 				<li><h3>duration 	(default: 200)</h3>The duration of the animation</li>
 				<li><h3>startOffset (default: auto - parent's offset from top)</h3>The amount of scroll offset after which the animations kicks in, because the idea is to start the animation only when the user has scrolled to a point where the element needs to start following him.<br />Value can be empty or auto, which are the same, or a number</li>
@@ -145,6 +146,8 @@
 				<li><h3>easing		(default: linear)</h3>Easing function (jQuery has by default only 'swing' &amp; 'linear')</li>
 				<li><h3>lockBottom	(default: true)</h3>Set to false if you don't want your floating box to stop at parent's bottom</li>
 				<li><h3>stickToBottom	(default: false)</h3>Set to true to make the floating menu stick to the bottom</li>
+				<li><h3>onReposition	(default: undefined)</h3>a callback to be invoked when the floated element is repositioned</li>
+				<li><h3>scrollArea	(default: window)</h3>The DOM element which stickyfloat should track it's scroll position (for situations with inner scroll)</li>
 			</ul>
 		</div>
 	</div>
