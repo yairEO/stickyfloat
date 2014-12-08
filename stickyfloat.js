@@ -69,8 +69,8 @@
                 $(w).ready(function(){
                     that.rePosition(true); // do a quick repositioning without any duration or delay
 					
-					$(that.settings.scrollArea).on('scroll.stickyfloat', function(){
-						raf( that.rePosition.bind(that) );
+					$(that.settings.scrollArea).on('scroll.sticky', function(){
+						raf( $.proxy(that.rePosition, that) );  
 					});
 					
                     $(w).on('resize.sticky', function(){
@@ -90,9 +90,10 @@
                     duration  = quick === true ? 0 : settings.duration,
                     //wScroll = w.pageYOffset || doc.documentElement.scrollTop,
                     //wHeight = w.innerHeight || doc.documentElement.offsetHeight,
-					wScroll   =  this.settings.scrollArea == w ? doc.documentElement.scrollTop : this.settings.scrollArea.scrollTop,
-                    wHeight   =  this.settings.scrollArea == w ? doc.documentElement.offsetHeight : this.settings.scrollArea.offsetHeight,
-                    objHeight = $obj[0].clientHeight;
+					areaScrollTop = this.settings.scrollArea == w ? doc.documentElement.scrollTop : this.settings.scrollArea.scrollTop,
+                    areaHeight    = this.settings.scrollArea == w ? doc.documentElement.offsetHeight : this.settings.scrollArea.offsetHeight,
+					areaViewportHeight = this.settings.scrollArea == w ? doc.documentElement.clientHeight : this.settings.scrollArea.clientHeight,
+                    objHeight     = $obj[0].clientHeight;
 					
                 $obj.stop(); // stop jquery animation on scroll event
 
@@ -103,16 +104,16 @@
                     maxTopPos = 0;
 
                 // define the basics of when should the object be moved
-                pastStartOffset         = wScroll > settings.startOffset;   // check if the window was scrolled down more than the start offset declared.
+                pastStartOffset         = areaScrollTop > settings.startOffset;   // check if the window was scrolled down more than the start offset declared.
                 objFartherThanTopPos    = $obj.offset().top > (settings.startOffset + settings.offsetY);    // check if the object is at it's top position (starting point)
-                objBiggerThanWindow     = objHeight < wHeight;  // if the window size is smaller than the Obj size, do not animate.
+                objBiggerThanArea       = objHeight > areaViewportHeight;  // if the window size is smaller than the Obj size, do not animate.
 
                 // if window scrolled down more than startOffset OR obj position is greater than
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
-                if( ((pastStartOffset || objFartherThanTopPos) && objBiggerThanWindow) || force ){
+                if( ((pastStartOffset || objFartherThanTopPos) && !objBiggerThanArea) || force ){
                     newpos = settings.stickToBottom ? 
-                                wScroll + wHeight - objHeight - settings.startOffset - settings.offsetY : 
-                                wScroll - settings.startOffset + settings.offsetY;
+                                areaScrollTop + areaHeight - objHeight - settings.startOffset - settings.offsetY : 
+                                areaScrollTop - settings.startOffset + settings.offsetY;
 
                     // made sure the floated element won't go beyond a certain maximum bottom position
                     if( newpos > maxTopPos && settings.lockBottom )
@@ -121,14 +122,14 @@
                     if( newpos < settings.offsetY )
                         newpos = settings.offsetY;
                     // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
-                    else if( wScroll < settings.startOffset && !settings.stickToBottom ) 
+                    else if( areaScrollTop < settings.startOffset && !settings.stickToBottom ) 
                         newpos = settings.offsetY;
 						
                     // if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
                     if( duration < 5 || (settings.cssTransition && supportsTransitions) )
                         $obj[0].style.top = newpos + 'px';
                     else
-                        $obj.stop().delay(settings.delay).animate({ top: newpos }, 500, settings.easing );
+                        $obj.stop().delay(settings.delay).animate({ top: newpos }, duration, settings.easing );
                 }
             },
 
@@ -148,7 +149,7 @@
             },
 
             destroy : function(){
-                $(window).off('scroll.sticky, resize.sticky', this.onScroll);
+                $(that.settings.scrollArea).off('scroll.sticky, resize.sticky');
                 this.obj.removeData();
                 return this.obj;
             }
