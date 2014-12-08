@@ -46,3 +46,4 @@ Please add this shim before any other script:
 | delay         | 0 / Number           | Delay in milliseconds until the animation starts                                                       |
 | easing        | linear / String      | Easing function (jQuery has only two by default: ‘swing’ & ‘linear’)                                   |
 | cssTransition | false / Boolean      | If you wish to manually set your own CSS3 transition styles on the floated element, set this to 'true' |
+| onReposition  | undefined / function | A callback to be invoked when the floated element is repositioned. Takes one argument: the element.    |

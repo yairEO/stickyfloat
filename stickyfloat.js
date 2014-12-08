@@ -13,15 +13,19 @@
                     delay           (number, 0)      - delay in milliseconds  until the animnations starts
                     easing          (string, linear) - easing function (jQuery has by default only 'swing' & 'linear')
                     stickToBottom   (boolean, false) - to make the element stick to the bottom instead to the top
+					onReposition    (function)       - a callback to be invoked when the floated element is repositioned.
+					scrollArea      (DOM element, window) - The element which stickyfloat should track it's scroll position (for situations with inner scroll)
+					
    @example         Example: jQuery('#menu').stickyfloat({duration: 400});
  *
  **/
  
 (function($){
+	"use strict";
+	
     var w = window,
         doc = document,
-        maxTopPos, minTopPos, pastStartOffset, objFartherThanTopPos, objBiggerThanWindow, newpos,
-        
+        maxTopPos, minTopPos,
         defaults = {
 			scrollArea      : w,
             duration        : 200, 
@@ -87,49 +91,55 @@
             rePosition : function(quick, force){
                 var $obj      = this.obj,
                     settings  = this.settings,
+					objBiggerThanArea,
+					objFartherThanTopPos,
+					pastStartOffset,
                     duration  = quick === true ? 0 : settings.duration,
                     //wScroll = w.pageYOffset || doc.documentElement.scrollTop,
                     //wHeight = w.innerHeight || doc.documentElement.offsetHeight,
 					areaScrollTop = this.settings.scrollArea == w ? doc.documentElement.scrollTop : this.settings.scrollArea.scrollTop,
-                    areaHeight    = this.settings.scrollArea == w ? doc.documentElement.offsetHeight : this.settings.scrollArea.offsetHeight,
-					areaViewportHeight = this.settings.scrollArea == w ? doc.documentElement.clientHeight : this.settings.scrollArea.clientHeight,
-                    objHeight     = $obj[0].clientHeight;
+                    areaHeight    = this.settings.scrollArea == w ? doc.documentElement.offsetHeight : this.settings.scrollArea.offsetHeight;
+				
+				this.areaViewportHeight = this.settings.scrollArea == w ? doc.documentElement.clientHeight : this.settings.scrollArea.clientHeight;
+				this.stickyHeight = $obj[0].clientHeight;
 					
-                $obj.stop(); // stop jquery animation on scroll event
+                $obj.stop(); // stop any jQuery animation on the sticky element
 
                 if( settings.lockBottom )
-                    maxTopPos = $obj[0].parentNode.clientHeight - objHeight - settings.offsetBottom; // get the maximum top position of the floated element inside it's parent
+                    maxTopPos = $obj[0].parentNode.clientHeight - this.stickyHeight - settings.offsetBottom; // get the maximum top position of the floated element inside it's parent
 
                 if( maxTopPos < 0 )
                     maxTopPos = 0;
 
-                // define the basics of when should the object be moved
-                pastStartOffset         = areaScrollTop > settings.startOffset;   // check if the window was scrolled down more than the start offset declared.
-                objFartherThanTopPos    = $obj.offset().top > (settings.startOffset + settings.offsetY);    // check if the object is at it's top position (starting point)
-                objBiggerThanArea       = objHeight > areaViewportHeight;  // if the window size is smaller than the Obj size, do not animate.
+                // Define the basics of when should the object be moved
+                pastStartOffset      = areaScrollTop > settings.startOffset;   // check if the window was scrolled down more than the start offset declared.
+                objFartherThanTopPos = $obj.offset().top > (settings.startOffset + settings.offsetY);    // check if the object is at it's top position (starting point)
+                objBiggerThanArea    = this.stickyHeight > this.areaViewportHeight;  // if the window size is smaller than the Obj size, do not animate.
 
                 // if window scrolled down more than startOffset OR obj position is greater than
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
                 if( ((pastStartOffset || objFartherThanTopPos) && !objBiggerThanArea) || force ){
-                    newpos = settings.stickToBottom ? 
-                                areaScrollTop + areaHeight - objHeight - settings.startOffset - settings.offsetY : 
+                    this.newpos = settings.stickToBottom ? 
+                                areaScrollTop + areaHeight - this.stickyHeight - settings.startOffset - settings.offsetY : 
                                 areaScrollTop - settings.startOffset + settings.offsetY;
 
                     // made sure the floated element won't go beyond a certain maximum bottom position
-                    if( newpos > maxTopPos && settings.lockBottom )
-                        newpos = maxTopPos;
+                    if( this.newpos > maxTopPos && settings.lockBottom )
+                        this.newpos = maxTopPos;
                     // make sure the new position is never less than the offsetY so the element won't go too high (when stuck to bottom and scrolled all the way up)
-                    if( newpos < settings.offsetY )
-                        newpos = settings.offsetY;
+                    if( this.newpos < settings.offsetY )
+                        this.newpos = settings.offsetY;
                     // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
                     else if( areaScrollTop < settings.startOffset && !settings.stickToBottom ) 
-                        newpos = settings.offsetY;
+                        this.newpos = settings.offsetY;
 						
                     // if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
                     if( duration < 5 || (settings.cssTransition && supportsTransitions) )
-                        $obj[0].style.top = newpos + 'px';
+                        $obj[0].style.top = this.newpos + 'px';
                     else
-                        $obj.stop().delay(settings.delay).animate({ top: newpos }, duration, settings.easing );
+                        $obj.stop().delay(settings.delay).animate({ top: this.newpos }, duration, settings.easing );
+						
+					this.settings.onReposition && this.settings.onReposition(this);
                 }
             },
 
