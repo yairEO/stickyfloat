@@ -13,6 +13,12 @@
                     delay           (number, 0)      - delay in milliseconds  until the animnations starts
                     easing          (string, linear) - easing function (jQuery has by default only 'swing' & 'linear')
                     stickToBottom   (boolean, false) - to make the element stick to the bottom instead to the top
+                    target          (Element, String)- An element to which to stick, rather than sticking to the visible bounds of
+                                                       the floated element's parent. The floated element should have 'position: absolute'.
+                                                       This may also be a jQuery selector identifying the target element, in which case
+                                                       the target will be dynamically determined. This allows an element to be floated above
+                                                       a UI that is rapidly re-rendering. _startOffset_ will be ignored if this is set–the
+                                                       element will be animated as necessary to follow the target.
    @example         Example: jQuery('#menu').stickyfloat({duration: 400});
  *
  **/
@@ -92,7 +98,8 @@
                     //wHeight = w.innerHeight || doc.documentElement.offsetHeight,
 					wScroll   =  this.settings.scrollArea == w ? doc.documentElement.scrollTop : this.settings.scrollArea.scrollTop,
                     wHeight   =  this.settings.scrollArea == w ? doc.documentElement.offsetHeight : this.settings.scrollArea.offsetHeight,
-                    objHeight = $obj[0].clientHeight;
+                    objHeight = $obj[0].clientHeight,
+                    targetObj = settings.target && $(settings.target)[0];
 					
                 $obj.stop(); // stop jquery animation on scroll event
 
@@ -109,10 +116,19 @@
 
                 // if window scrolled down more than startOffset OR obj position is greater than
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
-                if( ((pastStartOffset || objFartherThanTopPos) && objBiggerThanWindow) || force ){
-                    newpos = settings.stickToBottom ? 
-                                wScroll + wHeight - objHeight - settings.startOffset - settings.offsetY : 
-                                wScroll - settings.startOffset + settings.offsetY;
+                if( ((pastStartOffset || objFartherThanTopPos) && objBiggerThanWindow) || targetObj || force ){
+                    if (targetObj) {
+                        var $targetObj = $(targetObj),
+                            targetTop = $targetObj.offset().top,
+                            targetHeight = $targetObj.height();
+                        newpos = settings.stickToBottom ?
+                                    targetTop + targetHeight + settings.offsetY :
+                                    targetTop - settings.offsetY - objHeight;
+                    } else {
+                        newpos = settings.stickToBottom ?
+                                    wScroll + wHeight - objHeight - settings.startOffset - settings.offsetY :
+                                    wScroll - settings.startOffset + settings.offsetY;
+                    }
 
                     // made sure the floated element won't go beyond a certain maximum bottom position
                     if( newpos > maxTopPos && settings.lockBottom )
@@ -121,7 +137,7 @@
                     if( newpos < settings.offsetY )
                         newpos = settings.offsetY;
                     // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
-                    else if( wScroll < settings.startOffset && !settings.stickToBottom ) 
+                    else if( wScroll < settings.startOffset && !settings.stickToBottom && !targetObj )
                         newpos = settings.offsetY;
 						
                     // if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
