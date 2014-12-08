@@ -128,7 +128,7 @@
                     if( duration < 5 || (settings.cssTransition && supportsTransitions) )
                         $obj[0].style.top = newpos + 'px';
                     else
-                        $obj.stop().delay(settings.delay).animate({ top: newpos }, 500, settings.easing );
+                        $obj.stop().delay(settings.delay).animate({ top: newpos }, duration, settings.easing );
                 }
             },
 
