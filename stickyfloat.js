@@ -157,9 +157,8 @@
                         opts.startOffset = getComputed(this.obj).startOffset;
 
                     this.settings = $.extend( {}, this.settings, opts);
-
-                    this.rePosition(false, true);
                 }
+                this.rePosition(false, true);
                 return this.obj;
             },
 
