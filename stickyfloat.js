@@ -20,7 +20,7 @@
 (function($){
     var w = window,
         doc = document,
-        maxTopPos, minTopPos, pastStartOffset, objFartherThanTopPos, objBiggerThanWindow, newpos,
+        maxTopPos, minTopPos, pastStartOffset, objFartherThanTopPos, objSmallerThanWindow, newpos,
         
         defaults = {
 			scrollArea      : w,
@@ -105,11 +105,11 @@
                 // define the basics of when should the object be moved
                 pastStartOffset         = wScroll > settings.startOffset;   // check if the window was scrolled down more than the start offset declared.
                 objFartherThanTopPos    = $obj.offset().top > (settings.startOffset + settings.offsetY);    // check if the object is at it's top position (starting point)
-                objBiggerThanWindow     = objHeight < wHeight;  // if the window size is smaller than the Obj size, do not animate.
+                objSmallerThanWindow     = objHeight < wHeight;  // if the window size is smaller than the Obj size, do not animate.
 
                 // if window scrolled down more than startOffset OR obj position is greater than
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
-                if( ((pastStartOffset || objFartherThanTopPos) && objBiggerThanWindow) || force ){
+                if( ((pastStartOffset || objFartherThanTopPos) && objSmallerThanWindow) || force ){
                     newpos = settings.stickToBottom ? 
                                 wScroll + wHeight - objHeight - settings.startOffset - settings.offsetY : 
                                 wScroll - settings.startOffset + settings.offsetY;
