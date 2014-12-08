@@ -13,6 +13,8 @@
                     delay           (number, 0)      - delay in milliseconds  until the animnations starts
                     easing          (string, linear) - easing function (jQuery has by default only 'swing' & 'linear')
                     stickToBottom   (boolean, false) - to make the element stick to the bottom instead to the top
+                    onReposition    (function)       - a callback to be invoked when the floated element is repositioned.
+                                                       Takes one argument: the element.
    @example         Example: jQuery('#menu').stickyfloat({duration: 400});
  *
  **/
@@ -129,6 +131,8 @@
                         $obj[0].style.top = newpos + 'px';
                     else
                         $obj.stop().delay(settings.delay).animate({ top: newpos }, 500, settings.easing );
+                    
+                    if (this.settings.onReposition) this.settings.onReposition($obj[0]);
                 }
             },
 
