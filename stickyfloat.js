@@ -15,33 +15,33 @@
                     stickToBottom   (boolean, false) - to make the element stick to the bottom instead to the top
 					onReposition    (function)       - a callback to be invoked when the floated element is repositioned
 					scrollArea      (DOM element, window) - The element which stickyfloat should track it's scroll position (for situations with inner scroll)
-					
+
    @example         Example: jQuery('#menu').stickyfloat({duration: 400});
  *
  **/
- 
+
 (function($){
 	"use strict";
-	
+
     var w = window,
         doc = document,
         maxTopPos, minTopPos,
         defaults = {
 			scrollArea      : w,
-            duration        : 200, 
-            lockBottom      : true, 
-            delay           : 0, 
-            easing          : 'linear', 
+            duration        : 200,
+            lockBottom      : true,
+            delay           : 0,
+            easing          : 'linear',
             stickToBottom   : false,
             cssTransition   : false
         },
         // detect CSS transitions support
         supportsTransitions = (function() {
-            var i, 
-				s = doc.createElement('p').style, 
-				v = ['ms','O','Moz','Webkit'], 
+            var i,
+				s = doc.createElement('p').style,
+				v = ['ms','O','Moz','Webkit'],
 				prop = 'transition';
-				
+
             if( s[prop] == '' ) return true;
                 prop = prop.charAt(0).toUpperCase() + prop.slice(1);
             for( i = v.length; i--; )
@@ -49,12 +49,12 @@
                     return true;
             return false;
         })(),
-        
+
         Sticky = function(settings, obj){
             this.settings = settings;
             this.obj = $(obj);
         };
-        
+
         Sticky.prototype = {
             init : function(){
 				// don't bind an event listener if one is already attached
@@ -62,21 +62,21 @@
 					return false;
 
                 var that = this,
-					raf = window.requestAnimationFrame
-				       || window.webkitRequestAnimationFrame
-				       || window.mozRequestAnimationFrame
-				       || window.msRequestAnimationFrame
-				       || function(cb){ return window.setTimeout(cb, 1000 / 60); };
-						
-				
+					raf = w.requestAnimationFrame
+				       || w.webkitRequestAnimationFrame
+				       || w.mozRequestAnimationFrame
+				       || w.msRequestAnimationFrame
+				       || function(cb){ return w.setTimeout(cb, 1000 / 60); };
+
+
                 // bind the events
                 $(w).ready(function(){
                     that.rePosition(true); // do a quick repositioning without any duration or delay
-					
+
 					$(that.settings.scrollArea).on('scroll.sticky', function(){
-						raf( $.proxy(that.rePosition, that) );  
+						raf( $.proxy(that.rePosition, that) );
 					});
-					
+
                     $(w).on('resize.sticky', function(){
 						raf( that.rePosition.bind(that) )
 					});
@@ -97,12 +97,14 @@
                     duration  = quick === true ? 0 : settings.duration,
                     //wScroll = w.pageYOffset || doc.documentElement.scrollTop,
                     //wHeight = w.innerHeight || doc.documentElement.offsetHeight,
-					areaScrollTop = this.settings.scrollArea == w ? doc.documentElement.scrollTop : this.settings.scrollArea.scrollTop,
+
+                    // "scrollY" for modern browsers and "scrollTop" for IE
+					areaScrollTop = this.settings.scrollArea == w ? w.scrollY ? w.scrollY : doc.documentElement.scrollTop : this.settings.scrollArea.scrollTop,
                     areaHeight    = this.settings.scrollArea == w ? doc.documentElement.offsetHeight : this.settings.scrollArea.offsetHeight;
-				
+
 				this.areaViewportHeight = this.settings.scrollArea == w ? doc.documentElement.clientHeight : this.settings.scrollArea.clientHeight;
 				this.stickyHeight = $obj[0].clientHeight;
-					
+
                 $obj.stop(); // stop any jQuery animation on the sticky element
 
                 if( settings.lockBottom )
@@ -116,11 +118,12 @@
                 objFartherThanTopPos = $obj.offset().top > (settings.startOffset + settings.offsetY);    // check if the object is at it's top position (starting point)
                 objBiggerThanArea    = this.stickyHeight > this.areaViewportHeight;  // if the window size is smaller than the Obj size, do not animate.
 
+                console.log( areaScrollTop );
                 // if window scrolled down more than startOffset OR obj position is greater than
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
                 if( ((pastStartOffset || objFartherThanTopPos) && !objBiggerThanArea) || force ){
-                    this.newpos = settings.stickToBottom ? 
-                                areaScrollTop + areaHeight - this.stickyHeight - settings.startOffset - settings.offsetY : 
+                    this.newpos = settings.stickToBottom ?
+                                areaScrollTop + areaHeight - this.stickyHeight - settings.startOffset - settings.offsetY :
                                 areaScrollTop - settings.startOffset + settings.offsetY;
 
                     // made sure the floated element won't go beyond a certain maximum bottom position
@@ -130,20 +133,20 @@
                     if( this.newpos < settings.offsetY )
                         this.newpos = settings.offsetY;
                     // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
-                    else if( areaScrollTop < settings.startOffset && !settings.stickToBottom ) 
+                    else if( areaScrollTop < settings.startOffset && !settings.stickToBottom )
                         this.newpos = settings.offsetY;
-						
+
                     // if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
                     if( duration < 5 || (settings.cssTransition && supportsTransitions) )
                         $obj[0].style.top = this.newpos + 'px';
                     else
                         $obj.stop().delay(settings.delay).animate({ top: this.newpos }, duration, settings.easing );
-						
+
 					this.settings.onReposition && this.settings.onReposition(this);
                 }
             },
 
-            // update the settings for the instance and re-position the floating element 
+            // update the settings for the instance and re-position the floating element
             update : function(opts){
                 if( typeof opts === 'object' ){
                     if( !opts.offsetY || opts.offsetY == 'auto' )
@@ -179,7 +182,7 @@
         // instatiate a new 'Sticky' object per item that needs to be floated
         return this.each(function(){
             var $obj = $(this);
-            
+
             if( typeof document.body.style.maxHeight == 'undefined' )
                 return false;
             if(typeof option === 'object')
@@ -191,10 +194,10 @@
                 }
                 else
                     return this;
-            } 
-        
+            }
+
             var $settings = $.extend( {}, defaults, getComputed($obj), settings || {} );
-                
+
             var sticky = new Sticky($settings, $obj);
             sticky.init();
         });
