@@ -7,7 +7,7 @@ This plugin makes it possible to have a fixed position element that is relative 
 
 **9KB** - uncompressed
 
-# [Demo page](http://dropthebit.com/demos/stickyfloat/stickyfloat.html)
+# [Demo page](http://yaireo.github.io/stickyfloat/)
 
 ###Benefits
 
@@ -20,7 +20,7 @@ This plugin makes it possible to have a fixed position element that is relative 
 
 ####Example – initialize
     jQuery('.menu').stickyfloat( {duration: 400} );
-    
+
 ####Example – update (change settings for a specific element)
     jQuery('.menu').stickyfloat('update',{duration : 0, stickToBottom:true });
 
@@ -30,7 +30,7 @@ This plugin makes it possible to have a fixed position element that is relative 
 
 #### Old Browsers (no ES5 support)
 Please add this shim before any other script:
-    
+
 	<script src='http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.js'></script>
 
 ##Parameters
