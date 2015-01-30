@@ -5,7 +5,7 @@
  * @copyright       Copyright (c) 2013
  * @license         MIT and GPL licenses.
  * @link            http://dropthebit.com
- * @version         Version 8
+ * @version         Version 8.5
  * @parameters      duration        (number, 200)    - the duration of the animation
                     startOffset     (number)         - the amount of scroll offset after the animations kicks in
                     offsetY         (number)         - the offset from the top when the object is animated
@@ -118,7 +118,6 @@
                 objFartherThanTopPos = $obj.offset().top > (settings.startOffset + settings.offsetY);    // check if the object is at it's top position (starting point)
                 objBiggerThanArea    = this.stickyHeight > this.areaViewportHeight;  // if the window size is smaller than the Obj size, do not animate.
 
-                console.log( areaScrollTop );
                 // if window scrolled down more than startOffset OR obj position is greater than
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
                 if( ((pastStartOffset || objFartherThanTopPos) && !objBiggerThanArea) || force ){
