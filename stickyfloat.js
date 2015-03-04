@@ -161,7 +161,7 @@
             },
 
             destroy : function(){
-                $(that.settings.scrollArea).off('scroll.sticky');
+                $(this.settings.scrollArea).off('scroll.sticky');
 				$(w).off('resize.sticky');
                 this.obj.removeData();
                 return this.obj;
