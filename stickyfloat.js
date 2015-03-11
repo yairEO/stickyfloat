@@ -27,13 +27,14 @@
         doc = document,
         maxTopPos, minTopPos,
         defaults = {
-			scrollArea      : w,
-            duration        : 200,
-            lockBottom      : true,
-            delay           : 0,
-            easing          : 'linear',
-            stickToBottom   : false,
-            cssTransition   : false
+            scrollArea                  : w,
+            duration                    : 200,
+            lockBottom                  : true,
+            delay                       : 0,
+            easing                      : 'linear',
+            stickToBottom               : false,
+            cssTransition               : false,
+            scrollWhenObjBiggerThanArea : false
         },
         // detect CSS transitions support
         supportsTransitions = (function() {
@@ -120,7 +121,7 @@
 
                 // if window scrolled down more than startOffset OR obj position is greater than
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
-                if( ((pastStartOffset || objFartherThanTopPos) && !objBiggerThanArea) || force ){
+                if( ((pastStartOffset || objFartherThanTopPos) && (settings.scrollWhenObjBiggerThanArea || !objBiggerThanArea)) || force ){
                     this.newpos = settings.stickToBottom ?
                                 areaScrollTop + areaHeight - this.stickyHeight - settings.startOffset - settings.offsetY :
                                 areaScrollTop - settings.startOffset + settings.offsetY;
