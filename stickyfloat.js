@@ -105,6 +105,16 @@
 				this.areaViewportHeight = this.settings.scrollArea == w ? doc.documentElement.clientHeight : this.settings.scrollArea.clientHeight;
 				this.stickyHeight = $obj[0].clientHeight;
 
+                // Set the object active
+                this.setActive = function () {
+                    $obj.addClass('active');
+                };
+                // Set the object inactive
+                this.setInactive = function () {
+                    $obj.removeClass('active');
+                };
+
+
                 $obj.stop(); // stop any jQuery animation on the sticky element
 
                 if( settings.lockBottom )
@@ -125,14 +135,21 @@
                                 areaScrollTop + areaHeight - this.stickyHeight - settings.startOffset - settings.offsetY :
                                 areaScrollTop - settings.startOffset + settings.offsetY;
 
+                    // Set the object active by adding class 'active'
+                    this.setActive();
+
                     // made sure the floated element won't go beyond a certain maximum bottom position
                     if( this.newpos > maxTopPos && settings.lockBottom )
                         this.newpos = maxTopPos;
                     // make sure the new position is never less than the offsetY so the element won't go too high (when stuck to bottom and scrolled all the way up)
-                    if( this.newpos < settings.offsetY )
+                    if( this.newpos < settings.offsetY ) {
                         this.newpos = settings.offsetY;
-                    // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
-                    else if( areaScrollTop < settings.startOffset && !settings.stickToBottom )
+
+                        // Set the object inactive by removing class 'active'
+                        this.setInactive();
+
+                        // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
+                    } else if( areaScrollTop < settings.startOffset && !settings.stickToBottom )
                         this.newpos = settings.offsetY;
 
                     // if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
