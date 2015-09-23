@@ -1,16 +1,16 @@
 /**
- * stickyfloat - jQuery plugin for verticaly floating anything in a constrained area
+ * stickyfloat - jQuery plugin for vertically floating anything in a constrained area
  *
  * @author          Yair Even-Or (vsync)
  * @copyright       Copyright (c) 2013
  * @license         MIT and GPL licenses.
  * @link            http://dropthebit.com
- * @version         Version 8.5
+ * @version         Version 8.8
  * @parameters      duration        (number, 200)    - the duration of the animation
                     startOffset     (number)         - the amount of scroll offset after the animations kicks in
                     offsetY         (number)         - the offset from the top when the object is animated
                     lockBottom      (boolean, true)  - set to false if you don't want your floating box to stop at parent's bottom
-                    delay           (number, 0)      - delay in milliseconds  until the animnations starts
+                    delay           (number, 0)      - delay in milliseconds until the animation starts
                     easing          (string, linear) - easing function (jQuery has by default only 'swing' & 'linear')
                     stickToBottom   (boolean, false) - to make the element stick to the bottom instead to the top
 					onReposition    (function)       - a callback to be invoked when the floated element is repositioned
@@ -95,6 +95,7 @@
 					objFartherThanTopPos,
 					pastStartOffset,
                     duration  = quick === true ? 0 : settings.duration,
+					setActive = true,
                     //wScroll = w.pageYOffset || doc.documentElement.scrollTop,
                     //wHeight = w.innerHeight || doc.documentElement.offsetHeight,
 
@@ -112,7 +113,7 @@
 
                 if( maxTopPos < 0 )
                     maxTopPos = 0;
-
+					
                 // Define the basics of when should the object be moved
                 pastStartOffset      = areaScrollTop > settings.startOffset;   // check if the window was scrolled down more than the start offset declared.
                 objFartherThanTopPos = $obj.offset().top > (settings.startOffset + settings.offsetY);    // check if the object is at it's top position (starting point)
@@ -121,20 +122,27 @@
                 // if window scrolled down more than startOffset OR obj position is greater than
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
                 if( ((pastStartOffset || objFartherThanTopPos) && !objBiggerThanArea) || force ){
-                    this.newpos = settings.stickToBottom ?
-                                areaScrollTop + areaHeight - this.stickyHeight - settings.startOffset - settings.offsetY :
-                                areaScrollTop - settings.startOffset + settings.offsetY;
-
+                    this.newpos = areaScrollTop - settings.startOffset + settings.offsetY;
+					
+					if( settings.stickToBottom )
+                        this.newpos += this.areaViewportHeight - this.stickyHeight - settings.offsetY * 2;
+								
                     // made sure the floated element won't go beyond a certain maximum bottom position
-                    if( this.newpos > maxTopPos && settings.lockBottom )
+                    if( this.newpos > maxTopPos && settings.lockBottom ){
                         this.newpos = maxTopPos;
+						setActive = false;
+					}
                     // make sure the new position is never less than the offsetY so the element won't go too high (when stuck to bottom and scrolled all the way up)
-                    if( this.newpos < settings.offsetY )
+                    if( this.newpos < settings.offsetY ){
                         this.newpos = settings.offsetY;
+						setActive = false;
+					}
                     // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
                     else if( areaScrollTop < settings.startOffset && !settings.stickToBottom )
                         this.newpos = settings.offsetY;
-
+						
+					$obj.toggleClass('sf--active', setActive);
+						
                     // if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
                     if( duration < 5 || (settings.cssTransition && supportsTransitions) )
                         $obj[0].style.top = this.newpos + 'px';
