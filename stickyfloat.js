@@ -78,7 +78,7 @@
 					});
 
                     $(w).on('resize.sticky', function(){
-						raf( that.rePosition.bind(that) )
+						raf( $.proxy(that.rePosition, that) )
 					});
                 });
                 // for every element, attach it's instanced 'sticky'
@@ -113,7 +113,7 @@
 
                 if( maxTopPos < 0 )
                     maxTopPos = 0;
-					
+
                 // Define the basics of when should the object be moved
                 pastStartOffset      = areaScrollTop > settings.startOffset;   // check if the window was scrolled down more than the start offset declared.
                 objFartherThanTopPos = $obj.offset().top > (settings.startOffset + settings.offsetY);    // check if the object is at it's top position (starting point)
@@ -123,10 +123,10 @@
                 // the top position possible (+ offsetY) AND window size must be bigger than Obj size
                 if( ((pastStartOffset || objFartherThanTopPos) && !objBiggerThanArea) || force ){
                     this.newpos = areaScrollTop - settings.startOffset + settings.offsetY;
-					
+
 					if( settings.stickToBottom )
                         this.newpos += this.areaViewportHeight - this.stickyHeight - settings.offsetY * 2;
-								
+
                     // made sure the floated element won't go beyond a certain maximum bottom position
                     if( this.newpos > maxTopPos && settings.lockBottom ){
                         this.newpos = maxTopPos;
@@ -140,9 +140,9 @@
                     // if window scrolled < starting offset, then reset Obj position (settings.offsetY);
                     else if( areaScrollTop < settings.startOffset && !settings.stickToBottom )
                         this.newpos = settings.offsetY;
-						
+
 					$obj.toggleClass('sf--active', setActive);
-						
+
                     // if duration is set too low OR user wants to use css transitions, then do not use jQuery animate
                     if( duration < 5 || (settings.cssTransition && supportsTransitions) )
                         $obj[0].style.top = this.newpos + 'px';
