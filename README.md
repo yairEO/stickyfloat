@@ -9,7 +9,7 @@ This plugin makes it possible to have a fixed position element that is relative 
 
 # [Demo page](http://yaireo.github.io/stickyfloat/)
 
-###Benefits
+### Benefits
 
 * Can handle many floated elements, each with it’s own settings
 * Floated elements’ movement can be bound inside their parents’ area
@@ -18,13 +18,16 @@ This plugin makes it possible to have a fixed position element that is relative 
 * Code is very maintainable and higly efficient
 * Uses `requestAnimationFrame` with a throttled fall-back
 
-####Example – initialize
+#### Example – initialize
+
     jQuery('.menu').stickyfloat( {duration: 400} );
 
-####Example – update (change settings for a specific element)
+#### Example – update (change settings for a specific element)
+
     jQuery('.menu').stickyfloat('update',{duration : 0, stickToBottom:true });
 
-####Example – destroy (no more floating)
+#### Example – destroy (no more floating)
+
     jQuery('.menu').stickyfloat('destroy');
 
 
