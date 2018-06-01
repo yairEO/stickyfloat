@@ -20,6 +20,21 @@
  *
  **/
 
+(function(root, factory){
+
+  if (typeof define === 'function' && define.amd) {
+      // AMD. Register as an anonymous module.
+      define(['jquery'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    var jQuery = require('jquery');
+    module.exports = factory(jQuery);
+
+  }else{
+    // Browser globals
+    factory(root.jQuery);
+  }
+}(this, function(jQuery){
 (function($){
 	"use strict";
 
@@ -203,3 +218,4 @@
         });
     };
 })(jQuery);
+}));
